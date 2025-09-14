@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/app/Inc/*",
+                "${workspaceFolder}/bootloader/Inc/*",
+                "${workspaceFolder}/app/Src/*",
+                "${workspaceFolder}/bootloader/Src/*",
+                "${workspaceFolder}/CMSIS/Startup/*",
+                "${workspaceFolder}/CMSIS/STM32F4_Headers/*"
+            ],
+            "defines": ["STM32F407xx","STM32F407VG"],
+            "compilerPath": "/opt/gcc-arm-none-eabi-10.3-2021.10/bin//arm-none-eabi-gcc",
+            "cStandard": "c17",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "linux-clang-arm"
+        }
+    ],
+    "version": 4
+}
