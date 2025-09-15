@@ -1,7 +1,7 @@
 # Source files
 OUTPUT=Bootloader
 C_SRCS += \
-	./Src/main.c \
+	./Src/bootloader.c \
 	./Src/led.c \
 	./Src/syscalls.c \
 	./Src/sysmem.c
@@ -29,15 +29,16 @@ LD_flags =  -mcpu=cortex-m4 -g3 -DDEBUG -c -x assembler-with-cpp -MMD -MP -MF"$(
 CC = arm-none-eabi-gcc
 
 # Rule to include all object files for the 'all' target
-all: $(OUTPUT).elf
+all: bin
 
 bin: $(OUTPUT).elf
 	arm-none-eabi-objcopy -O binary $(OUTPUT).elf $(OUTPUT).bin 
+	@scripts/bootloader_padding.py
 
 
 # target 
 $(OUTPUT).elf : $(OBJS) $(OBJS_s)
-	$(CC) $^ -o $@ -mcpu=cortex-m4 -T"./Boot_STM32F407VGTX_FLASH.ld" \
+	$(CC) $^ -o $@ -mcpu=cortex-m4 -T"./Boot_STM32F407VGTX_FLASH.ld"  -Xlinker -Map=$(OUTPUT).map  \
 	--specs=nosys.specs -Wl,--gc-sections -static --specs=nano.specs \
 	-mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
@@ -58,4 +59,4 @@ $(OBJS_s): $(S_SRCS)
 .PHONY: clean
 
 clean:
-	rm -f $(OBJS) $(C_DEPS) $(OBJS_s) $(OUTPUT).elf
+	rm -f $(OBJS) $(C_DEPS) $(OBJS_s) $(OUTPUT).elf $(OUTPUT).bin $(OUTPUT).map

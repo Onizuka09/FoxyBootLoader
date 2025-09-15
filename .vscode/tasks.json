@@ -5,7 +5,7 @@
             "label": "Build all",
             "group": "build",
             "type": "shell",
-            "command": "make",
+            "command": "cd app && make",
             "args": ["all", "-j4"]
         },
         {

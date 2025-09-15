@@ -7,31 +7,31 @@
         {
             "name": "STlink launch",
             "cwd": "${workspaceRoot}",
-            "executable": "${workspaceRoot}/Template_proj.elf",
+            "executable": "${workspaceRoot}/app/App.elf",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "stutil",
             "device": "STM32F407VG",
             "interface": "swd",
             "runToMain": true, // else it starts at reset handler - not interested
-            "preLaunchTask": "Build all", // configured in tasks.json
+            //"preLaunchTask": "Build all", // configured in tasks.json
             // "preLaunchCommands": ["Build all"], // you can execute command instead of task
-            "svdFile": "STM32F407VG.svd", // Include svd to watch device peripherals
+            "svdFile": "${workspaceRoot}/app/STM32F407VG.svd", // Include svd to watch device peripherals
             "swoConfig": {} // currently (v1.7.0) not supported
         },
         {
             "name": "STlink attach",
             "cwd": "${workspaceRoot}",
-            "executable": "${workspaceRoot}/Template_proj.elf",
+            "executable": "${workspaceRoot}/app/App.elf",
             "request": "attach",
             "type": "cortex-debug",
             "servertype": "stutil",
             "device": "STM32F407VG",
             "interface": "swd",
             "runToMain": true, // else it starts at reset handler - not interested
-            "preLaunchTask": "Build all", // configured in tasks.json
+            //"preLaunchTask": "Build all", // configured in tasks.json
             // "preLaunchCommands": ["Build all"], // you can execute command instead of task
-            "svdFile": "${workspaceRoot}/STM32F407VG.svd", // Include svd to watch device peripherals
+            "svdFile": "${workspaceRoot}/app/STM32F407VG.svd", // Include svd to watch device peripherals
             "swoConfig": {} // currently (v1.7.0) not supported
         },
     ]

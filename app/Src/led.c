@@ -1,12 +1,12 @@
 #include "led.h"
 #include <stdint.h>
 
-#define PIN12 (1U << 12)
-#define LED_pin PIN12
+#define PIN13 (1U << 13)
+#define LED_pin PIN13
 void Led_init(){
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN ; 
-    GPIOD->MODER |= (1U << 24);
-    GPIOD->MODER &= ~(1U << 25);
+    GPIOD->MODER |= (1U << 26);
+    GPIOD->MODER &= ~(1U << 27);
 }
 void Toggle_led(){
 

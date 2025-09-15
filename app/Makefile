@@ -4,13 +4,20 @@ C_SRCS += \
 	./Src/main.c \
 	./Src/led.c \
 	./Src/syscalls.c \
-	./Src/sysmem.c
+	./Src/sysmem.c 
 
 S_SRCS += \
-	../CMSIS/Startup/startup_stm32f407vgtx.s
+	../CMSIS/Startup/startup_stm32f407vgtx.s 
 
-OBJS_s+= \
-	./Build/startup_stm32f401vgtx.o 
+B_SRC += \
+	./Src/bootloader.S
+
+OBJS_s += \
+	./Build/startup_stm32f401vgtx.o
+
+OBJ_B += \
+	./Build/bootloader.o 
+
 
 # Object files
 OBJS = $(C_SRCS:./Src/%.c=./Build/%.o)
@@ -29,15 +36,15 @@ LD_flags =  -mcpu=cortex-m4 -g3 -DDEBUG -c -x assembler-with-cpp -MMD -MP -MF"$(
 CC = arm-none-eabi-gcc
 
 # Rule to include all object files for the 'all' target
-all: $(OUTPUT).elf
+all: bin
 
 bin: $(OUTPUT).elf
 	arm-none-eabi-objcopy -O binary $(OUTPUT).elf $(OUTPUT).bin 
 
 
 # target 
-$(OUTPUT).elf : $(OBJS) $(OBJS_s)
-	$(CC) $^ -o $@ -mcpu=cortex-m4 -T"./APP_STM32F407VGTX_FLASH.ld" \
+$(OUTPUT).elf : $(OBJS) $(OBJS_s) $(OBJ_B)
+	$(CC) $^ -o $@ -mcpu=cortex-m4 -T"./APP_STM32F407VGTX_FLASH.ld" -Xlinker -Map="$(OUTPUT).map" \
 	--specs=nosys.specs -Wl,--gc-sections -static --specs=nano.specs \
 	-mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
@@ -51,11 +58,13 @@ $(OBJS): ./Build/%.o: ./Src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Rule to build object files from assembly files
-$(OBJS_s): $(S_SRCS)
+$(OBJ_B): $(B_SRC)
 	$(CC) -mcpu=cortex-m4 -g3 -DDEBUG -c -x assembler-with-cpp -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@" "$<"
 
+$(OBJS_s): $(S_SRCS)
+	$(CC) -mcpu=cortex-m4 -g3 -DDEBUG -c -x assembler-with-cpp -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@" "$<"
 # Phony target to prevent conflicts with files named 'clean'
 .PHONY: clean
 
 clean:
-	rm -f $(OBJS) $(C_DEPS) $(OBJS_s) $(OUTPUT).elf
+	rm -f $(OBJS) $(OBJ_B) $(C_DEPS) $(OBJS_s) $(OUTPUT).elf $(OUTPUT).bin $(OUTPUT).map
